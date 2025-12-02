@@ -6,7 +6,6 @@ import com.example.projetocrud.repo.UserRepo;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,11 +13,14 @@ import java.util.List;
 @Service
 @Transactional
 public class UserService {
-    @Autowired
-    private UserRepo userRepository;
+    private final UserRepo userRepository;
 
-    @Autowired
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
+
+    public UserService(ModelMapper modelMapper, UserRepo userRepository) {
+        this.modelMapper = modelMapper;
+        this.userRepository = userRepository;
+    }
 
     // LISTAR TODOS
     public List<UserDTO> getAllUsers() {
