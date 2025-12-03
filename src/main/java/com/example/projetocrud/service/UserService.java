@@ -31,9 +31,10 @@ public class UserService {
     // SALVAR USUÁRIO
     public UserDTO saveUser(UserDTO userDTO) {
         User user = modelMapper.map(userDTO, User.class);
-        userRepository.save(user);
-        return userDTO;
+        user= userRepository.save(user);
+        return modelMapper.map(user, UserDTO.class);
     }
+
 
     //ATUALIZAR USUÁRIO
     public UserDTO updateUser(Long userId, UserDTO userDTO) {
