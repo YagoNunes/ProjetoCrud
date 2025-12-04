@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,4 +18,13 @@ public class User {
     private Integer id;
 
     private String name;
+
+    @Column(unique = true) //Não pode existir dois usuarios com mesmo email
+    private String email;
+
+    private String password;
+
+    private String cpf;
+
+    private LocalDate birthDate;
 }

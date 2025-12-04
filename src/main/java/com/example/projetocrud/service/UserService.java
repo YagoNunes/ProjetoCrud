@@ -4,48 +4,49 @@ import com.example.projetocrud.dto.UserDTO;
 import com.example.projetocrud.model.User;
 import com.example.projetocrud.repo.UserRepo;
 import jakarta.transaction.Transactional;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Service
-@Transactional
+@RequiredArgsConstructor
 public class UserService {
+
     private final UserRepo userRepository;
 
-    private final ModelMapper modelMapper;
+    public UserDTO create(UserDTO userDTO) {
 
-    public UserService(ModelMapper modelMapper, UserRepo userRepository) {
-        this.modelMapper = modelMapper;
-        this.userRepository = userRepository;
+        User newUser = new User();
+        newUser.setName(userDTO.getName());
+        newUser.setEmail(userDTO.getEmail());
+        newUser.setPassword(userDTO.getPassword());
+        newUser.setCpf(userDTO.getCpf());
+        newUser.setBirthDate(userDTO.getBirthday());
+
+        User savedUser = userRepository.save(newUser);
+
+        UserDTO responseDTO = new UserDTO();
+        responseDTO.setId(savedUser.getId());
+        responseDTO.setName(savedUser.getName());
+        responseDTO.setEmail(savedUser.getEmail());
+        responseDTO.setCpf(savedUser.getCpf());
+        responseDTO.setBirthday(savedUser.getBirthDate());
+
+        return responseDTO;
     }
 
-    // LISTAR TODOS
-    public List<UserDTO> getAllUsers() {
-        List<User> userList = userRepository.findAll();
-        return modelMapper.map(userList, new TypeToken<List<UserDTO>>() {}.getType());
-    }
+    public UserDTO login(String email, String password) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario não encontrado"));
 
-    // SALVAR USUÁRIO
-    public UserDTO saveUser(UserDTO userDTO) {
-        User user = modelMapper.map(userDTO, User.class);
-        user= userRepository.save(user);
-        return modelMapper.map(user, UserDTO.class);
-    }
+        if (!user.getPassword().equals(password)) {
+            throw new RuntimeException("Senha incorreta");
+        }
 
+        UserDTO userDTO = new UserDTO();
+        userDTO.setName(user.getName());
+        userDTO.setEmail(user.getEmail());
 
-    //ATUALIZAR USUÁRIO
-    public UserDTO updateUser(Long userId, UserDTO userDTO) {
-        User user = modelMapper.map(userDTO, User.class);
-        userRepository.save(user);
         return userDTO;
-    }
-
-    //DELETAR USUÁRIO
-    public String deleteUser(Long userId) {
-        userRepository.deleteById(Math.toIntExact(userId));
-        return "Usuário excluído com sucesso!";
     }
 }
