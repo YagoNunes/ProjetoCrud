@@ -19,7 +19,7 @@ public class User {
 
     private String name;
 
-    @Column(unique = true) //Não pode existir dois usuarios com mesmo email
+    @Column(unique = true)
     private String email;
 
     private String password;
@@ -27,4 +27,5 @@ public class User {
     private String cpf;
 
     private LocalDate birthDate;
+
 }

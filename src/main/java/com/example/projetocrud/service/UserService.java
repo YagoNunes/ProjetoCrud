@@ -3,10 +3,11 @@ package com.example.projetocrud.service;
 import com.example.projetocrud.dto.UserDTO;
 import com.example.projetocrud.model.User;
 import com.example.projetocrud.repo.UserRepo;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -44,9 +45,33 @@ public class UserService {
         }
 
         UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
         userDTO.setName(user.getName());
         userDTO.setEmail(user.getEmail());
+        userDTO.setPassword(null);
 
         return userDTO;
     }
+
+    public Optional<User> getUserById(Long id) {
+        return userRepository.findById(Math.toIntExact(id));
+    }
+
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public User save (User user) {
+        return userRepository.save(user);
+    }
+
+    public boolean deleteById(Long id) {
+        if (!userRepository.existsById(Math.toIntExact(id))){
+            return false;
+        }
+        userRepository.deleteById(Math.toIntExact(id));
+        return true;
+    }
+
+
 }
